@@ -1,76 +1,62 @@
-var items=[]
+window.addEventListener('load', () => {
+	const form = document.querySelector("#new-task-form");
+	const input = document.querySelector("#new-task-input");
+	const list_el = document.querySelector("#tasks");
 
-// create a function to collect user input
-function collectUserInput(){
-    var userInput=document.getElementById("user__input")
-    console.log(userInput)
-    var addBut=document.getElementById("add")
-    console.log(addBut)
-    addBut.addEventListener("click", function(e){
-        e.preventDefault();
-        console.log(userInput.value)
-        items.push(userInput.value)
-        console.log(items)
-        itemNumber(items)
-        return userInput.value
-    })
-}
-// call the function
-collectUserInput()
-console.log(items)
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
 
-//create a function to add item number
-function itemNumber(arr){
-    for(item of arr){
-        console.log(arr.indexOf(item) + 1)
-        return arr.indexOf(item) + 1
-    }
-}
+		const task = input.value;
 
-// create a functio to get date
-function getDate(){
-    var date = new Date()
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
-}
-//getDate()
+		const task_el = document.createElement('div');
+		task_el.classList.add('task');
 
-//create a function to get time
-function getTime(){
-    var date=new Date()
-    var hrs=(date.getHours() < 10)? `0${date.getHours()}`:date.getHours()
-    var mins=(date.getMinutes() < 10)?`0${date.getMinutes()}`:date.getMinutes()
-    var secs=(date.getSeconds() < 10)?`0${date.getSeconds()}`:date.getSeconds()
-    console.log(`${hrs}:${mins}:${secs}`)
+		const task_content_el = document.createElement('div');
+		task_content_el.classList.add('content');
 
-}
+		task_el.appendChild(task_content_el);
 
-function removeItem(){
-    var butt=document.createElement("button")
-    butt.textContent="X"
-    var err=document.getElementById("err")
-    err.appendChild(butt)
-    butt.addEventListener("click", function(){
-        var hd=document.getElementById("hd")
-        hd.remove()
-    })
-}
+		const task_input_el = document.createElement('input');
+		task_input_el.classList.add('text');
+		task_input_el.type = 'text';
+		task_input_el.value = task;
+		task_input_el.setAttribute('readonly', 'readonly');
 
-removeItem()
+		task_content_el.appendChild(task_input_el);
 
-function confirm(){
-    var confirmButt=document.createElement("button")
-    confirmButt.textContent="pending.."
-    confirmButt.className="cnfrm" 
-    var err=document.getElementById("err")
-    err.appendChild(confirmButt)
-    confirmButt.addEventListener("click", function(){
-        console.log("working!!")
-        confirmButt.classList.toggle("confirmed")
-        confirmButt.classList.contains("confirmed")?confirmButt.textContent="Confirmed":confirmButt.textContent="pending.."
+		const task_actions_el = document.createElement('div');
+		task_actions_el.classList.add('actions');
+		
+		const task_edit_el = document.createElement('button');
+		task_edit_el.classList.add('edit');
+		task_edit_el.innerText = 'Edit';
 
-    })
+		const task_delete_el = document.createElement('button');
+		task_delete_el.classList.add('delete');
+		task_delete_el.innerText = 'Delete';
 
-}
+		task_actions_el.appendChild(task_edit_el);
+		task_actions_el.appendChild(task_delete_el);
 
-confirm()
+		task_el.appendChild(task_actions_el);
 
+		list_el.appendChild(task_el);
+
+		input.value = '';
+
+		task_edit_el.addEventListener('click', (e) => {
+			if (task_edit_el.innerText.toLowerCase() == "edit") {
+				task_edit_el.innerText = "Save";
+				task_input_el.removeAttribute("readonly");
+				task_input_el.focus();
+			} else {
+				task_edit_el.innerText = "Edit";
+				task_input_el.setAttribute("readonly", "readonly");
+			}
+		});
+
+		task_delete_el.addEventListener('click', (e) => {
+			list_el.removeChild(task_el);
+		});
+	});
+});
